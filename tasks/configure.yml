@@ -36,6 +36,18 @@
   notify:
     - reload prometheus
 
+- name: Ensure group "certreader" exists
+  ansible.builtin.group:
+    name: certreader
+    state: present
+- name: Ensure prometheus user into certreader group
+  ansible.builtin.user:
+    name: prometheus
+    groups: certreader
+    append: yes
+  notify:
+    - restart prometheus
+
 - name: configure Prometheus web
   copy:
     content: "{{ prometheus_web_config | to_nice_yaml(indent=2,sort_keys=False) }}"
